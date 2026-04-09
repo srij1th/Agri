@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmDirect - Connect with Local Farmers</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #4a8f29;
+            --secondary-color: #f5f5dc;
+            --accent-color: #e67e22;
+            --text-color: #333;
+            --light-text: #fff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f9f9f9;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover img {
+            transform: rotate(15deg);
+        }
+        
+        .logo span {
+            color: var(--accent-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        /* Cart indicator */
+        .cart-indicator {
+            position: relative;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--light-text);
+            animation: fadeIn 1s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: slideUp 1s ease;
+        }
+        
+        @keyframes slideUp {
+            from { 
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            animation: slideUp 1s ease 0.2s forwards;
+            opacity: 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--accent-color);
+            color: var(--light-text);
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s;
+            animation: slideUp 1s ease 0.4s forwards;
+            opacity: 0;
+        }
+        
+        .btn:hover {
+            background: #d35400;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* Farmers Section */
+        .section-title {
+            text-align: center;
+            margin: 3rem 0 2rem;
+            font-size: 2rem;
+            color: var(--primary-color);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-color);
+            margin: 0.5rem auto;
+            border-radius: 2px;
+        }
+        
+        .farmers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .farmer-card {
+            background: var(--light-text);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .farmer-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .farmer-img {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .farmer-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .farmer-card:hover .farmer-img img {
+            transform: scale(1.1);
+        }
+        
+        .farmer-info {
+            padding: 1.5rem;
+        }
+        
+        .farmer-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .farmer-location {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: #666;
+        }
+        
+        .farmer-location i {
+            margin-right: 0.5rem;
+            color: var(--accent-color);
+        }
+        
+        .farmer-products {
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        
+        /* Farmer Details Modal */
+        .farmer-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .farmer-modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            animation: slideUp 0.4s ease;
+        }
+        
+        .close-farmer-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+        
+        .close-farmer-modal:hover {
+            color: var(--accent-color);
+        }
+        
+        .farmer-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .farmer-details {
+                flex-direction: row;
+            }
+        }
+        
+        .farmer-details-img {
+            flex: 1;
+        }
+        
+        .farmer-details-img img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .farmer-details-info {
+            flex: 1;
+        }
+        
+        .farmer-details-info h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .farmer-contact-info {
+            margin: 1.5rem 0;
+        }
+        
+        .farmer-contact-info p {
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .farmer-contact-info i {
+            margin-right: 0.8rem;
+            color: var(--accent-color);
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Products Section */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .product-card {
+            background: var(--light-text);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .product-img {
+            height: 180px;
+            overflow: hidden;
+        }
+        
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .product-card:hover .product-img img {
+            transform: scale(1.1);
+        }
+        
+        .product-info {
+            padding: 1rem;
+        }
+        
+        .product-info h3 {
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .product-card:hover .product-info h3 {
+            color: var(--accent-color);
+        }
+        
+        .product-price {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+        
+        .product-farmer {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .add-to-cart {
+            width: 100%;
+            padding: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .add-to-cart:hover {
+            background: #3a7320;
+            transform: translateY(-2px);
+        }
+        
+        /* Product Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            animation: slideUp 0.4s ease;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent-color);
+        }
+        
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .product-details {
+                flex-direction: row;
+            }
+        }
+        
+        .product-details-img {
+            flex: 1;
+        }
+        
+        .product-details-img img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .product-details-info {
+            flex: 1;
+        }
+        
+        .product-details-info h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .product-details-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        
+        .quantity-selector button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .quantity-selector button:hover {
+            background: #3a7320;
+        }
+        
+        .quantity-selector input {
+            width: 50px;
+            height: 30px;
+            text-align: center;
+            margin: 0 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        /* Shopping Cart */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .close-cart {
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-cart:hover {
+            color: var(--accent-color);
+        }
+        
+        .cart-items {
+            padding: 1rem;
+        }
+        
+        .cart-item {
+            display: flex;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s;
+        }
+        
+        .cart-item:hover {
+            background: rgba(0,0,0,0.02);
+        }
+        
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            margin-right: 1rem;
+        }
+        
+        .cart-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .cart-item-details {
+            flex: 1;
+        }
+        
+        .cart-item-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cart-item-price {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+        }
+        
+        .cart-item-quantity button {
+            background: #f0f0f0;
+            border: none;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .cart-item-quantity button:hover {
+            background: #ddd;
+        }
+        
+        .cart-item-quantity input {
+            width: 40px;
+            height: 25px;
+            text-align: center;
+            margin: 0 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .remove-item {
+            color: #ff4444;
+            cursor: pointer;
+            margin-left: 1rem;
+            transition: color 0.3s;
+        }
+        
+        .remove-item:hover {
+            color: #cc0000;
+        }
+        
+        .cart-total {
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .cart-actions {
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* Contact Form */
+        .contact-section {
+            padding: 3rem 0;
+        }
+        
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            height: 150px;
+        }
+        
+        /* Order Details */
+        .order-summary {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .order-items {
+            margin: 1rem 0;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-total {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-align: right;
+            margin-top: 1rem;
+        }
+        
+        /* Newsletter Section */
+        .newsletter {
+            background: var(--secondary-color);
+            padding: 3rem 0;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        
+        .newsletter h2 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .newsletter p {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+        }
+        
+        .newsletter-form button {
+            padding: 0 1.5rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .newsletter-form button:hover {
+            background: #d35400;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--primary-color);
+            color: var(--light-text);
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-column ul li a {
+            color: var(--light-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-links a {
+            color: var(--light-text);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .newsletter-form input {
+                border-radius: 5px;
+                margin-bottom: 0.5rem;
+            }
+            
+            .newsletter-form button {
+                border-radius: 5px;
+                padding: 0.8rem;
+            }
+            
+            .product-details {
+                flex-direction: column;
+            }
+            
+            .farmer-details {
+                flex-direction: column;
+            }
+            
+            .cart-modal {
+                width: 100%;
+                max-width: none;
+            }
+        }
+        
+        /* Animation classes */
+        .animate {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="/images.png" alt="FarmDirect Logo">
+                <span>Farm</span>Direct
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#farmers">Farmers</a></li>
+                    <li><a href="#products">Products</a></li>
+                    <li><a href="#markets">Markets</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li class="cart-indicator">
+                        <a href="#" id="view-cart"><i class="fas fa-shopping-cart"></i></a>
+                        <span class="cart-count">0</span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Connect Directly With Local Farmers</h1>
+                <p>Fresh, seasonal produce straight from the farm to your table. Support local agriculture and enjoy the best quality food.</p>
+                <a href="#products" class="btn">Shop Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Farmers Section -->
+    <section class="container" id="farmers">
+        <h2 class="section-title">Meet Our Farmers</h2>
+        <div class="farmers-grid">
+            <!-- Farmer 1 - Green Valley Farm -->
+            <div class="farmer-card animate delay-1">
+                <div class="farmer-img">
+                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Green Valley Farm">
+                </div>
+                <div class="farmer-info">
+                    <h3>Green Valley Farm</h3>
+                    <div class="farmer-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Vellore, Tamil Nadu</span>
+                    </div>
+                    <p>Family-owned organic farm specializing in seasonal vegetables and free-range eggs since 2010.</p>
+                    <div class="farmer-products">
+                        <strong>Products:</strong> Tomatoes, Potatoes, Eggs, Carrots, Spinach
+                    </div>
+                    <div class="farmer-contact">
+                        <i class="fas fa-phone"></i> +91 9876543210
+                    </div>
+                    <button class="btn view-farm-btn" data-farm="green-valley">View Farm</button>
+                </div>
+            </div>
+
+            <!-- Farmer 2 - Sunny Slope Orchard -->
+            <div class="farmer-card animate delay-2">
+                <div class="farmer-img">
+                    <img src="https://images.unsplash.com/photo-1500595046743-cd271d694d30?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Sunny Slope Orchard">
+                </div>
+                <div class="farmer-info">
+                    <h3>Sunny Slope Orchard</h3>
+                    <div class="farmer-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Kanchipuram, Tamil Nadu</span>
+                    </div>
+                    <p>Certified organic orchard with heritage varieties of fruits and vegetables.</p>
+                    <div class="farmer-products">
+                        <strong>Products:</strong> Mangoes, Bananas, Berries, Honey
+                    </div>
+                    <div class="farmer-contact">
+                        <i class="fas fa-phone"></i> +91 8765432109
+                    </div>
+                    <button class="btn view-farm-btn" data-farm="sunny-slope">View Farm</button>
+                </div>
+            </div>
+
+            <!-- Farmer 3 - Happy Cow Dairy -->
+            <div class="farmer-card animate delay-3">
+                <div class="farmer-img">
+                    <img src="https://images.unsplash.com/photo-1516467508483-a7212febe31a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Happy Cow Dairy">
+                </div>
+                <div class="farmer-info">
+                    <h3>Happy Cow Dairy</h3>
+                    <div class="farmer-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Krishnagiri, Tamil Nadu</span>
+                    </div>
+                    <p>Small-scale dairy producing fresh milk and dairy products.</p>
+                    <div class="farmer-products">
+                        <strong>Products:</strong> Milk, Cheese, Yogurt, Butter
+                    </div>
+                    <div class="farmer-contact">
+                        <i class="fas fa-phone"></i> +91 7654321098
+                    </div>
+                    <button class="btn view-farm-btn" data-farm="happy-cow">View Farm</button>
+                </div>
+            </div>
+
+            <!-- Farmer 4 - Organic Greens -->
+            <div class="farmer-card animate delay-1">
+                <div class="farmer-img">
+                    <img src="https://images.unsplash.com/photo-1589927986089-35812388d1f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Organic Greens">
+                </div>
+                <div class="farmer-info">
+                    <h3>Organic Greens</h3>
+                    <div class="farmer-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Chennai, Tamil Nadu</span>
+                    </div>
+                    <p>Specializing in organic leafy greens and microgreens.</p>
+                    <div class="farmer-products">
+                        <strong>Products:</strong> Spinach, Kale, Lettuce, Microgreens
+                    </div>
+                    <div class="farmer-contact">
+                        <i class="fas fa-phone"></i> +91 6543210987
+                    </div>
+                    <button class="btn view-farm-btn" data-farm="organic-greens">View Farm</button>
+                </div>
+            </div>
+
+            <!-- Farmer 5 - Spice Valley -->
+            <div class="farmer-card animate delay-2">
+                <div class="farmer-img">
+                    <img src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Spice Valley">
+                </div>
+                <div class="farmer-info">
+                    <h3>Spice Valley</h3>
+                    <div class="farmer-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Coimbatore, Tamil Nadu</span>
+                    </div>
+                    <p>Organic spice farm producing high-quality spices.</p>
+                    <div class="farmer-products">
+                        <strong>Products:</strong> Turmeric, Pepper, Cardamom, Cinnamon
+                    </div>
+                    <div class="farmer-contact">
+                        <i class="fas fa-phone"></i> +91 9432109876
+                    </div>
+                    <button class="btn view-farm-btn" data-farm="spice-valley">View Farm</button>
+                </div>
+            </div>
+
+            <!-- Farmer 6 - Golden Grains -->
+            <div class="farmer-card animate delay-3">
+                <div class="farmer-img">
+                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Golden Grains">
+                </div>
+                <div class="farmer-info">
+                    <h3>Golden Grains</h3>
+                    <div class="farmer-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Thanjavur, Tamil Nadu</span>
+                    </div>
+                    <p>Traditional rice farm producing organic rice varieties.</p>
+                    <div class="farmer-products">
+                        <strong>Products:</strong> Basmati Rice, Brown Rice, Red Rice
+                    </div>
+                    <div class="farmer-contact">
+                        <i class="fas fa-phone"></i> +91 8321098765
+                    </div>
+                    <button class="btn view-farm-btn" data-farm="golden-grains">View Farm</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Farmer Details Modals -->
+    <!-- Green Valley Farm Modal -->
+    <div class="farmer-modal" id="green-valley-modal">
+        <div class="farmer-modal-content">
+            <span class="close-farmer-modal">&times;</span>
+            <div class="farmer-details">
+                <div class="farmer-details-img">
+                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Green Valley Farm">
+                </div>
+                <div class="farmer-details-info">
+                    <h2>Green Valley Farm</h2>
+                    <p>Established in 2010, Green Valley Farm is a family-owned organic farm located in the fertile lands of Vellore. We specialize in growing seasonal vegetables and raising free-range chickens for eggs.</p>
+                    
+                    <div class="farmer-contact-info">
+                        <h3>Contact Information</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> 123 Farm Road, Green Valley, Vellore, Tamil Nadu - 632014</p>
+                        <p><i class="fas fa-phone"></i> <strong>Phone:</strong> +91 9876543210, +91 9876543211</p>
+                        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> greenvalleyfarm@gmail.com</p>
+                        <p><i class="fas fa-clock"></i> <strong>Working Hours:</strong> Monday-Saturday, 8AM-6PM</p>
+                    </div>
+                    
+                    <div class="farmer-products">
+                        <h3>Our Products</h3>
+                        <ul>
+                            <li>Organic Tomatoes</li>
+                            <li>Fresh Potatoes</li>
+                            <li>Farm Fresh Eggs</li>
+                            <li>Organic Carrots</li>
+                            <li>Fresh Spinach</li>
+                            <li>Bell Peppers</li>
+                            <li>Cucumbers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sunny Slope Orchard Modal -->
+    <div class="farmer-modal" id="sunny-slope-modal">        <div class="farmer-modal-content">
+            <span class="close-farmer-modal">&times;</span>
+            <div class="farmer-details">
+                <div class="farmer-details-img">
+                    <img src="https://images.unsplash.com/photo-1500595046743-cd271d694d30?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Sunny Slope Orchard">
+                </div>
+                <div class="farmer-details-info">
+                    <h2>Sunny Slope Orchard</h2>
+                    <p>Located in the sunny slopes of Kanchipuram, our orchard has been producing high-quality organic fruits since 2005. We take pride in our heritage varieties and sustainable farming practices.</p>
+                    
+                    <div class="farmer-contact-info">
+                        <h3>Contact Information</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> 45 Orchard Lane, Sunny Slope, Kanchipuram, Tamil Nadu - 631502</p>
+                        <p><i class="fas fa-phone"></i> <strong>Phone:</strong> +91 8765432109, +91 8765432110</p>
+                        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> sunnyslopeorchard@gmail.com</p>
+                        <p><i class="fas fa-clock"></i> <strong>Working Hours:</strong> Monday-Saturday, 7AM-5PM</p>
+                    </div>
+                    
+                    <div class="farmer-products">
+                        <h3>Our Products</h3>
+                        <ul>
+                            <li>Fresh Mangoes</li>
+                            <li>Organic Bananas</li>
+                            <li>Seasonal Berries</li>
+                            <li>Pure Honey</li>
+                            <li>Organic Guavas</li>
+                            <li>Pomegranates</li>
+                            <li>Papayas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Happy Cow Dairy Modal -->
+    <div class="farmer-modal" id="happy-cow-modal">
+        <div class="farmer-modal-content">
+            <span class="close-farmer-modal">&times;</span>
+            <div class="farmer-details">
+                <div class="farmer-details-img">
+                    <img src="https://images.unsplash.com/photo-1516467508483-a7212febe31a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Happy Cow Dairy">
+                </div>
+                <div class="farmer-details-info">
+                    <h2>Happy Cow Dairy</h2>
+                    <p>At Happy Cow Dairy, we believe in ethical treatment of animals and sustainable dairy farming. Our small-scale operation in Krishnagiri produces the freshest milk and dairy products using traditional methods.</p>
+                    
+                    <div class="farmer-contact-info">
+                        <h3>Contact Information</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> 78 Dairy Farm Road, Krishnagiri, Tamil Nadu - 635001</p>
+                        <p><i class="fas fa-phone"></i> <strong>Phone:</strong> +91 7654321098, +91 7654321099</p>
+                        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> happycowdairy@gmail.com</p>
+                        <p><i class="fas fa-clock"></i> <strong>Working Hours:</strong> Daily, 6AM-8PM</p>
+                    </div>
+                    
+                    <div class="farmer-products">
+                        <h3>Our Products</h3>
+                        <ul>
+                            <li>Fresh Milk</li>
+                            <li>Artisanal Cheese</li>
+                            <li>Homemade Yogurt</li>
+                            <li>Fresh Butter</li>
+                            <li>Paneer</li>
+                            <li>Ghee</li>
+                            <li>Buttermilk</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Organic Greens Modal -->
+    <div class="farmer-modal" id="organic-greens-modal">
+        <div class="farmer-modal-content">
+            <span class="close-farmer-modal">&times;</span>
+            <div class="farmer-details">
+                <div class="farmer-details-img">
+                    <img src="https://images.unsplash.com/photo-1589927986089-35812388d1f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Organic Greens">
+                </div>
+                <div class="farmer-details-info">
+                    <h2>Organic Greens</h2>
+                    <p>Specializing in organic leafy greens and microgreens, our farm in Chennai uses hydroponic technology to deliver the freshest greens year-round with minimal water usage.</p>
+                    
+                    <div class="farmer-contact-info">
+                        <h3>Contact Information</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> 22 Green Lane, Chennai, Tamil Nadu - 600028</p>
+                        <p><i class="fas fa-phone"></i> <strong>Phone:</strong> +91 6543210987, +91 6543210988</p>
+                        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> organicgreens@gmail.com</p>
+                        <p><i class="fas fa-clock"></i> <strong>Working Hours:</strong> Monday-Friday, 9AM-5PM</p>
+                    </div>
+                    
+                    <div class="farmer-products">
+                        <h3>Our Products</h3>
+                        <ul>
+                            <li>Organic Spinach</li>
+                            <li>Kale</li>
+                            <li>Lettuce Varieties</li>
+                            <li>Microgreens</li>
+                            <li>Arugula</li>
+                            <li>Swiss Chard</li>
+                            <li>Herbs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spice Valley Modal -->
+    <div class="farmer-modal" id="spice-valley-modal">
+        <div class="farmer-modal-content">
+            <span class="close-farmer-modal">&times;</span>
+            <div class="farmer-details">
+                <div class="farmer-details-img">
+                    <img src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Spice Valley">
+                </div>
+                <div class="farmer-details-info">
+                    <h2>Spice Valley</h2>
+                    <p>Nestled in the foothills of the Western Ghats, Spice Valley has been cultivating organic spices for three generations using traditional methods that preserve flavor and medicinal properties.</p>
+                    
+                    <div class="farmer-contact-info">
+                        <h3>Contact Information</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> 10 Spice Road, Coimbatore, Tamil Nadu - 641001</p>
+                        <p><i class="fas fa-phone"></i> <strong>Phone:</strong> +91 9432109876, +91 9432109877</p>
+                        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> spicevalley@gmail.com</p>
+                        <p><i class="fas fa-clock"></i> <strong>Working Hours:</strong> Monday-Saturday, 10AM-4PM</p>
+                    </div>
+                    
+                    <div class="farmer-products">
+                        <h3>Our Products</h3>
+                        <ul>
+                            <li>Organic Turmeric</li>
+                            <li>Black Pepper</li>
+                            <li>Cardamom</li>
+                            <li>Cinnamon</li>
+                            <li>Cloves</li>
+                            <li>Nutmeg</li>
+                            <li>Vanilla Beans</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Golden Grains Modal -->
+    <div class="farmer-modal" id="golden-grains-modal">
+        <div class="farmer-modal-content">
+            <span class="close-farmer-modal">&times;</span>
+            <div class="farmer-details">
+                <div class="farmer-details-img">
+                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Golden Grains">
+                </div>
+                <div class="farmer-details-info">
+                    <h2>Golden Grains</h2>
+                    <p>Located in the rice bowl of Tamil Nadu, Golden Grains continues a 100-year tradition of organic rice cultivation, preserving heritage varieties while implementing sustainable water management techniques.</p>
+                    
+                    <div class="farmer-contact-info">
+                        <h3>Contact Information</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> 5 Paddy Field Road, Thanjavur, Tamil Nadu - 613001</p>
+                        <p><i class="fas fa-phone"></i> <strong>Phone:</strong> +91 8321098765, +91 8321098766</p>
+                        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> goldengrains@gmail.com</p>
+                        <p><i class="fas fa-clock"></i> <strong>Working Hours:</strong> Monday-Friday, 9AM-5PM</p>
+                    </div>
+                    
+                    <div class="farmer-products">
+                        <h3>Our Products</h3>
+                        <ul>
+                            <li>Basmati Rice</li>
+                            <li>Brown Rice</li>
+                            <li>Red Rice</li>
+                            <li>Black Rice</li>
+                            <li>Jasmine Rice</li>
+                            <li>Wild Rice</li>
+                            <li>Rice Flour</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Products Section -->
+    <section class="container" id="products">
+        <h2 class="section-title">Fresh This Week</h2>
+        <div class="products-grid">
+            <!-- Product 1 -->
+            <div class="product-card animate delay-1" data-id="1" data-name="Organic Tomatoes" data-price="49" data-farmer="Green Valley Farm" data-image="https://images.unsplash.com/photo-1582284540020-8acbe03f4924?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1582284540020-8acbe03f4924?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Organic Tomatoes">
+                </div>
+                <div class="product-info">
+                    <h3>Organic Tomatoes</h3>
+                    <div class="product-price">₹49/kg</div>
+                    <div class="product-farmer">From Green Valley Farm</div>
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="view-details btn" style="margin-top: 0.5rem; width: 100%; background: #666;">View Details</button>
+                </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product-card animate delay-2" data-id="2" data-name="Fresh Mangoes" data-price="89" data-farmer="Sunny Slope Orchard" data-image="https://images.unsplash.com/photo-1550258987-190a2d41a8ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1550258987-190a2d41a8ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Fresh Mangoes">
+                </div>
+                <div class="product-info">
+                    <h3>Fresh Mangoes</h3>
+                    <div class="product-price">₹89/kg</div>
+                    <div class="product-farmer">From Sunny Slope Orchard</div>
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="view-details btn" style="margin-top: 0.5rem; width: 100%; background: #666;">View Details</button>
+                </div>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="product-card animate delay-3" data-id="3" data-name="Farm Fresh Eggs" data-price="99" data-farmer="Green Valley Farm" data-image="https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Farm Eggs">
+                </div>
+                <div class="product-info">
+                    <h3>Farm Fresh Eggs</h3>
+                    <div class="product-price">₹99/dozen</div>
+                    <div class="product-farmer">From Green Valley Farm</div>
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="view-details btn" style="margin-top: 0.5rem; width: 100%; background: #666;">View Details</button>
+                </div>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="product-card animate delay-2" data-id="5" data-name="Organic Potatoes" data-price="35" data-farmer="Green Valley Farm" data-image="https://images.unsplash.com/photo-1518977676601-b53f82aba655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Organic Potatoes">
+                </div>
+                <div class="product-info">
+                    <h3>Organic Potatoes</h3>
+                    <div class="product-price">₹35/kg</div>
+                    <div class="product-farmer">From Green Valley Farm</div>
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="view-details btn" style="margin-top: 0.5rem; width: 100%; background: #666;">View Details</button>
+                </div>
+            </div>
+
+            <!-- Product 5 -->
+            <div class="product-card animate delay-3" data-id="6" data-name="Bananas" data-price="29" data-farmer="Sunny Slope Orchard" data-image="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Bananas">
+                </div>
+                <div class="product-info">
+                    <h3>Bananas</h3>
+                    <div class="product-price">₹29/dozen</div>
+                    <div class="product-farmer">From Sunny Slope Orchard</div>
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="view-details btn" style="margin-top: 0.5rem; width: 100%; background: #666;">View Details</button>
+                </div>
+            </div>
+
+            <!-- Product 6 -->
+            <div class="product-card animate delay-1" data-id="7" data-name="Fresh Carrots" data-price="39" data-farmer="Green Valley Farm" data-image="https://images.unsplash.com/photo-1447175008436-054170c2e979?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1447175008436-054170c2e979?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Fresh Carrots">
+                </div>
+                <div class="product-info">
+                    <h3>Fresh Carrots</h3>
+                    <div class="product-price">₹39/kg</div>
+                    <div class="product-farmer">From Green Valley Farm</div>
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="view-details btn" style="margin-top: 0.5rem; width: 100%; background: #666;">View Details</button>
+                </div>
+            </div>
+
+            <!-- Product 7 -->
+            <div class="product-card animate delay-2" data-id="8" data-name="Homemade Butter" data-price="120" data-farmer="Happy Cow Dairy" data-image="https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Homemade Butter">
+                </div>
+                <div class="product-info">
+                    <h3>Homemade Butter</h3>
+                    <div class="product-price">₹120/250g</div>
+                    <div class="product-farmer">From Happy Cow Dairy</div>
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="view-details btn" style="margin-top: 0.5rem; width: 100%; background: #666;">View Details</button>
+                </div>
+            </div>
+
+            <!-- Product 8 -->
+            <div class="product-card animate delay-3" data-id="9" data-name="Organic Spinach" data-price="55" data-farmer="Organic Greens" data-image="https://images.unsplash.com/photo-1576045057995-568f588f82fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1576045057995-568f588f82fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Organic Spinach">
+                </div>
+                <div class="product-info">
+                    <h3>Organic Spinach</h3>
+                    <div class="product-price">₹55/bunch</div>
+                    <div class="product-farmer">From Organic Greens</div>
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="view-details btn" style="margin-top: 0.5rem; width: 100%; background: #666;">View Details</button>
+                </div>
+            </div>
+
+            <!-- Product 9 -->
+            <div class="product-card animate delay-1" data-id="10" data-name="Organic Turmeric" data-price="180" data-farmer="Spice Valley" data-image="https://images.unsplash.com/photo-1603569283847-aa295f0d016a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1603569283847-aa295f0d016a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Organic Turmeric">
+                </div>
+                <div class="product-info">
+                    <h3>Organic Turmeric</h3>
+                    <div class="product-price">₹180/100g</div>
+                    <div class="product-farmer">From Spice Valley</div>
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="view-details btn" style="margin-top: 0.5rem; width: 100%; background: #666;">View Details</button>
+                </div>
+            </div>
+
+            <!-- Product 10 -->
+            <div class="product-card animate delay-2" data-id="11" data-name="Basmati Rice" data-price="120" data-farmer="Golden Grains" data-image="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Basmati Rice">
+                </div>
+                <div class="product-info">
+                    <h3>Basmati Rice</h3>
+                    <div class="product-price">₹120/kg</div>
+                    <div class="product-farmer">From Golden Grains</div>
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="view-details btn" style="margin-top: 0.5rem; width: 100%; background: #666;">View Details</button>
+                </div>
+            </div>
+
+            <!-- Product 11 -->
+            <div class="product-card animate delay-3" data-id="12" data-name="Organic Honey" data-price="350" data-farmer="Sunny Slope Orchard" data-image="https://images.unsplash.com/photo-1587049352851-8d4e89133924?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1587049352851-8d4e89133924?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Organic Honey">
+                </div>
+                <div class="product-info">
+                    <h3>Organic Honey</h3>
+                    <div class="product-price">₹350/500g</div>
+                    <div class="product-farmer">From Sunny Slope Orchard</div>
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="view-details btn" style="margin-top: 0.5rem; width: 100%; background: #666;">View Details</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Details Modal -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="product-details">
+                <div class="product-details-img">
+                    <img id="modal-product-image" src="" alt="">
+                </div>
+                <div class="product-details-info">
+                    <h2 id="modal-product-name"></h2>
+                    <p id="modal-product-farmer"></p>
+                    <div class="product-details-price" id="modal-product-price"></div>
+                    <p id="modal-product-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+                    <div class="quantity-selector">
+                        <button id="decrease-qty">-</button>
+                        <input type="number" id="product-quantity" value="1" min="1">
+                        <button id="increase-qty">+</button>
+                    </div>
+                    <button class="btn" id="add-to-cart-modal" style="margin-top: 1rem;">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shopping Cart Modal -->
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <span class="close-cart">&times;</span>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Cart items will be added here dynamically -->
+        </div>
+        <div class="cart-total">
+            Total: ₹<span id="cart-total">0.00</span>
+        </div>
+        <div class="cart-actions">
+            <button class="btn" style="background: #666;" id="continue-shopping">Continue Shopping</button>
+            <button class="btn" id="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Contact Information Section -->
+    <section class="contact-section container" id="contact-section" style="display: none;">
+        <h2 class="section-title">Contact Information</h2>
+        <div class="contact-form">
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Delivery Address</label>
+                    <textarea id="address" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="payment">Payment Method</label>
+                    <select id="payment" required>
+                        <option value="">Select payment method</option>
+                        <option value="cash">Cash on Delivery</option>
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="upi">UPI Payment</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Place Order</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Order Details Section -->
+    <section class="container" id="order-details" style="display: none;">
+        <h2 class="section-title">Order Confirmation</h2>
+        <div class="order-summary">
+            <h3>Thank you for your order!</h3>
+            <p>Your order has been received and is being processed. Here are your order details:</p>
+            
+            <div class="order-items" id="order-items">
+                <!-- Order items will be added here dynamically -->
+            </div>
+            
+            <div class="order-total">
+                Total: ₹<span id="order-total">0.00</span>
+            </div>
+            
+            <h4 style="margin-top: 2rem;">Delivery Information</h4>
+            <p id="delivery-info"></p>
+            
+            <p style="margin-top: 2rem;">We'll contact you shortly to confirm your order. For any questions, please contact us at kishore.s2023c@vitstudent.ac.in or call 9952694534 / 9566606192.</p>
+            
+            <div id="whatsapp-receipt" style="margin-top: 2rem; text-align: center;">
+                <p>A receipt has been sent to your WhatsApp number.</p>
+                <a href="#" class="btn" id="view-whatsapp-receipt" style="background: #25D366;">
+                    <i class="fab fa-whatsapp"></i> View WhatsApp Receipt
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Markets Section -->
+    <section class="container" id="markets" style="padding: 3rem 0;">
+        <h2 class="section-title">Our Markets</h2>
+        <div class="farmers-grid">
+            <div class="farmer-card animate delay-1">
+                <div class="farmer-img">
+                    <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Vellore Market">
+                </div>
+                <div class="farmer-info">
+                    <h3>Vellore Organic Market</h3>
+                    <div class="farmer-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Vellore, Tamil Nadu</span>
+                    </div>
+                    <p>Every Saturday from 7AM to 1PM at Gandhi Market</p>
+                    <div class="farmer-products">
+                        <strong>Available:</strong> Fresh vegetables, fruits, dairy, and more
+                    </div>
+                    <div class="farmer-contact">
+                        <i class="fas fa-phone"></i> +91 9952694534
+                    </div>
+                </div>
+            </div>
+            
+                       <div class="farmer-card animate delay-3">
+                <div class="farmer-img">
+                    <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Online Market">
+                </div>
+                <div class="farmer-info">
+                    <h3>Online Market</h3>
+                    <div class="farmer-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Available Everywhere</span>
+                    </div>
+                    <p>24/7 online ordering with next-day delivery</p>
+                    <div class="farmer-products">
+                        <strong>Available:</strong> All our farm products delivered to your door
+                    </div>
+                    <div class="farmer-contact">
+                        <i class="fas fa-phone"></i> +91 9566606192
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="container" id="about" style="padding: 3rem 0;">
+        <h2 class="section-title">About FarmDirect</h2>
+        <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Our Story</h3>
+            <p style="margin-bottom: 1rem;">FarmDirect was founded in 2025 with a simple mission: to connect consumers directly with local farmers, eliminating middlemen and ensuring fair prices for both farmers and customers.</p>
+            
+            <h3 style="color: var(--primary-color); margin: 1.5rem 0 1rem;">Our Values</h3>
+            <ul style="margin-bottom: 1rem; padding-left: 1.5rem;">
+                <li style="margin-bottom: 0.5rem;">Supporting local farmers and sustainable agriculture</li>
+                <li style="margin-bottom: 0.5rem;">Providing fresh, high-quality products</li>
+                <li style="margin-bottom: 0.5rem;">Transparent pricing and fair trade</li>
+                <li style="margin-bottom: 0.5rem;">Reducing food miles and carbon footprint</li>
+            </ul>
+            
+            <h3 style="color: var(--primary-color); margin: 1.5rem 0 1rem;">Our Team</h3>
+                        <p>We're a small team of passionate individuals committed to revolutionizing the way people access fresh, local produce. Our team includes agricultural experts, tech enthusiasts, and sustainability advocates working together to build a better food system.</p>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem;">
+                <div style="flex: 1; min-width: 200px; background: var(--secondary-color); padding: 1rem; border-radius: 8px;">
+                    <h4 style="color: var(--primary-color);">Kishore S</h4>
+		    <h4 style="color: var(--primary-color);">ThanaShree T</h4>
+                    <p>Founder & CEO</p>
+                    <p>Agricultural Engineer</p>
+                </div>
+                <div style="flex: 1; min-width: 200px; background: var(--secondary-color); padding: 1rem; border-radius: 8px;">
+                    <h4 style="color: var(--primary-color);">Team Member</h4>
+                    <p>Operations Manager</p>
+                    <p>Supply Chain Expert</p>
+                </div>
+                <div style="flex: 1; min-width: 200px; background: var(--secondary-color); padding: 1rem; border-radius: 8px;">
+                    <h4 style="color: var(--primary-color);">Team Member</h4>
+                    <p>Technology Lead</p>
+                    <p>Full Stack Developer</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="container">
+            <h2>Join Our Newsletter</h2>
+            <p>Subscribe to get updates on seasonal produce, special offers, and farming tips directly to your inbox.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Your email address" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="container" id="contact" style="padding: 3rem 0;">
+        <h2 class="section-title">Contact Us</h2>
+        <div class="contact-form">
+            <form id="contact-form">
+                <div class="form-group">
+                    <label for="contact-name">Name</label>
+                    <input type="text" id="contact-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-email">Email</label>
+                    <input type="email" id="contact-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-subject">Subject</label>
+                    <input type="text" id="contact-subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-message">Message</label>
+                    <textarea id="contact-message" required></textarea>
+                </div>
+                <button type="submit" class="btn">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>FarmDirect</h3>
+                    <p>Connecting you directly with local farmers for fresh, seasonal produce.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#farmers">Farmers</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#markets">Markets</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> VIT University, Vellore, TN</li>
+                        <li><i class="fas fa-phone"></i> +91 9952694534</li>
+			<li><i class="fas fa-phone"></i> +91 9566606192</li>
+                        <li><i class="fas fa-envelope"></i> kishore.s2023c@vitstudent.ac.in</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Business Hours</h3>
+                    <ul>
+                        <li>Monday - Friday: 9AM - 6PM</li>
+                        <li>Saturday: 9AM - 4PM</li>
+                        <li>Sunday  : 10AM - 1PM</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 FarmDirect. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // DOM Elements
+        const viewCartBtn = document.getElementById('view-cart');
+        const cartModal = document.getElementById('cart-modal');
+        const closeCartBtn = document.querySelector('.close-cart');
+        const continueShoppingBtn = document.getElementById('continue-shopping');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const cartCount = document.querySelector('.cart-count');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        const viewDetailsButtons = document.querySelectorAll('.view-details');
+        const productModal = document.getElementById('product-modal');
+        const closeModalBtn = document.querySelector('.close-modal');
+        const farmerModals = document.querySelectorAll('.farmer-modal');
+        const closeFarmerModalBtns = document.querySelectorAll('.close-farmer-modal');
+        const viewFarmButtons = document.querySelectorAll('.view-farm-btn');
+        const contactSection = document.getElementById('contact-section');
+        const checkoutForm = document.getElementById('checkout-form');
+        const orderDetailsSection = document.getElementById('order-details');
+        const orderItemsContainer = document.getElementById('order-items');
+        const orderTotal = document.getElementById('order-total');
+        const deliveryInfo = document.getElementById('delivery-info');
+        const contactForm = document.getElementById('contact-form');
+
+        // Cart Data
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Initialize the page
+        function init() {
+            updateCartCount();
+            setupEventListeners();
+            setupAnimations();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Cart functionality
+            viewCartBtn.addEventListener('click', openCart);
+            closeCartBtn.addEventListener('click', closeCart);
+            continueShoppingBtn.addEventListener('click', closeCart);
+            checkoutBtn.addEventListener('click', proceedToCheckout);
+            
+            // Product details
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', addToCart);
+            });
+            
+            viewDetailsButtons.forEach(button => {
+                button.addEventListener('click', showProductDetails);
+            });
+            
+            closeModalBtn.addEventListener('click', () => {
+                productModal.style.display = 'none';
+            });
+            
+            // Farmer details
+            viewFarmButtons.forEach(button => {
+                button.addEventListener('click', showFarmerDetails);
+            });
+            
+            closeFarmerModalBtns.forEach(button => {
+                button.addEventListener('click', () => {
+                    button.closest('.farmer-modal').style.display = 'none';
+                });
+            });
+            
+            // Checkout form
+            checkoutForm.addEventListener('submit', placeOrder);
+            
+            // Contact form
+            contactForm.addEventListener('submit', submitContactForm);
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === productModal) {
+                    productModal.style.display = 'none';
+                }
+                
+                farmerModals.forEach(modal => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+                
+                if (e.target === cartModal) {
+                    cartModal.style.display = 'none';
+                }
+            });
+            
+            // Quantity selectors in modal
+            document.getElementById('decrease-qty').addEventListener('click', () => {
+                const quantityInput = document.getElementById('product-quantity');
+                if (quantityInput.value > 1) {
+                    quantityInput.value = parseInt(quantityInput.value) - 1;
+                }
+            });
+            
+            document.getElementById('increase-qty').addEventListener('click', () => {
+                const quantityInput = document.getElementById('product-quantity');
+                quantityInput.value = parseInt(quantityInput.value) + 1;
+            });
+            
+            // Add to cart from modal
+            document.getElementById('add-to-cart-modal').addEventListener('click', addToCartFromModal);
+        }
+
+        // Setup scroll animations
+        function setupAnimations() {
+            const animateElements = document.querySelectorAll('.animate');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animateElements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+
+        // Cart functions
+        function openCart(e) {
+            e.preventDefault();
+            renderCart();
+            cartModal.style.display = 'block';
+        }
+
+        function closeCart() {
+            cartModal.style.display = 'none';
+        }
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalItems;
+        }
+
+        function renderCart() {
+            cartItemsContainer.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p>Your cart is empty</p>';
+                cartTotal.textContent = '0.00';
+                return;
+            }
+            
+            let total = 0;
+            
+            cart.forEach((item, index) => {
+                const cartItemElement = document.createElement('div');
+                cartItemElement.className = 'cart-item';
+                cartItemElement.innerHTML = `
+                    <div class="cart-item-img">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">${item.name}</div>
+                        <div class="cart-item-price">₹${item.price * item.quantity}</div>
+                        <div class="cart-item-quantity">
+                            <button class="decrease" data-index="${index}">-</button>
+                            <input type="number" value="${item.quantity}" min="1" class="item-quantity" data-index="${index}">
+                            <button class="increase" data-index="${index}">+</button>
+                            <span class="remove-item" data-index="${index}"><i class="fas fa-trash"></i></span>
+                        </div>
+                    </div>
+                `;
+                
+                cartItemsContainer.appendChild(cartItemElement);
+                total += item.price * item.quantity;
+            });
+            
+            cartTotal.textContent = total.toFixed(2);
+            
+            // Add event listeners to quantity controls
+            document.querySelectorAll('.decrease').forEach(button => {
+                button.addEventListener('click', decreaseQuantity);
+            });
+            
+            document.querySelectorAll('.increase').forEach(button => {
+                button.addEventListener('click', increaseQuantity);
+            });
+            
+            document.querySelectorAll('.item-quantity').forEach(input => {
+                input.addEventListener('change', updateQuantity);
+            });
+            
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', removeItem);
+            });
+        }
+
+        function addToCart(e) {
+            const productCard = e.target.closest('.product-card');
+            const productId = productCard.getAttribute('data-id');
+            const productName = productCard.getAttribute('data-name');
+            const productPrice = parseFloat(productCard.getAttribute('data-price'));
+            const productFarmer = productCard.getAttribute('data-farmer');
+            const productImage = productCard.getAttribute('data-image');
+            
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    farmer: productFarmer,
+                    image: productImage,
+                    quantity: 1
+                });
+            }
+            
+            saveCart();
+            updateCartCount();
+            
+            // Show added to cart feedback
+            const button = e.target;
+            button.textContent = 'Added!';
+            button.style.backgroundColor = '#4a8f29';
+            
+            setTimeout(() => {
+                button.textContent = 'Add to Cart';
+                button.style.backgroundColor = '';
+            }, 1500);
+        }
+
+        function addToCartFromModal() {
+            const productId = productModal.getAttribute('data-id');
+            const productName = productModal.getAttribute('data-name');
+            const productPrice = parseFloat(productModal.getAttribute('data-price'));
+            const productFarmer = productModal.getAttribute('data-farmer');
+            const productImage = productModal.getAttribute('data-image');
+            const quantity = parseInt(document.getElementById('product-quantity').value);
+            
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    farmer: productFarmer,
+                    image: productImage,
+                    quantity: quantity
+                });
+            }
+            
+            saveCart();
+            updateCartCount();
+            productModal.style.display = 'none';
+            
+            // Show feedback
+            const notification = document.createElement('div');
+            notification.textContent = `${quantity} ${productName} added to cart!`;
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.right = '20px';
+            notification.style.backgroundColor = '#4a8f29';
+            notification.style.color = 'white';
+            notification.style.padding = '10px 20px';
+            notification.style.borderRadius = '5px';
+            notification.style.zIndex = '1000';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 2000);
+        }
+
+        function decreaseQuantity(e) {
+            const index = e.target.getAttribute('data-index');
+            if (cart[index].quantity > 1) {
+                cart[index].quantity -= 1;
+                saveCart();
+                renderCart();
+            }
+        }
+
+        function increaseQuantity(e) {
+            const index = e.target.getAttribute('data-index');
+            cart[index].quantity += 1;
+            saveCart();
+            renderCart();
+        }
+
+        function updateQuantity(e) {
+            const index = e.target.getAttribute('data-index');
+            const newQuantity = parseInt(e.target.value);
+            
+            if (newQuantity > 0) {
+                cart[index].quantity = newQuantity;
+                saveCart();
+                renderCart();
+            } else {
+                e.target.value = cart[index].quantity;
+            }
+        }
+
+        function removeItem(e) {
+            const index = e.target.closest('.remove-item').getAttribute('data-index');
+            cart.splice(index, 1);
+            saveCart();
+            renderCart();
+            updateCartCount();
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // Product details functions
+        function showProductDetails(e) {
+            const productCard = e.target.closest('.product-card');
+            
+            productModal.setAttribute('data-id', productCard.getAttribute('data-id'));
+            productModal.setAttribute('data-name', productCard.getAttribute('data-name'));
+            productModal.setAttribute('data-price', productCard.getAttribute('data-price'));
+            productModal.setAttribute('data-farmer', productCard.getAttribute('data-farmer'));
+            productModal.setAttribute('data-image', productCard.getAttribute('data-image'));
+            
+            document.getElementById('modal-product-name').textContent = productCard.getAttribute('data-name');
+            document.getElementById('modal-product-price').textContent = `₹${productCard.getAttribute('data-price')}`;
+            document.getElementById('modal-product-farmer').textContent = `From ${productCard.getAttribute('data-farmer')}`;
+            document.getElementById('modal-product-image').src = productCard.getAttribute('data-image');
+            document.getElementById('modal-product-image').alt = productCard.getAttribute('data-name');
+            document.getElementById('product-quantity').value = 1;
+            
+            productModal.style.display = 'block';
+        }
+
+        // Farmer details functions
+        function showFarmerDetails(e) {
+            const farmId = e.target.getAttribute('data-farm');
+            document.getElementById(`${farmId}-modal`).style.display = 'block';
+        }
+
+        // Checkout functions
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty. Please add some products before checkout.');
+                return;
+            }
+            
+            cartModal.style.display = 'none';
+            contactSection.style.display = 'block';
+            
+            // Scroll to contact section
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function placeOrder(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const payment = document.getElementById('payment').value;
+            
+            // Save order details
+            const order = {
+                customer: { name, email, phone, address },
+                paymentMethod: payment,
+                items: [...cart],
+                date: new Date().toISOString(),
+                status: 'Processing'
+            };
+            
+            localStorage.setItem('currentOrder', JSON.stringify(order));
+            
+            // Render order details
+            renderOrderDetails(order);
+            
+            // Clear cart
+            cart = [];
+            saveCart();
+            updateCartCount();
+            
+            // Hide contact form and show order confirmation
+            contactSection.style.display = 'none';
+            orderDetailsSection.style.display = 'block';
+            
+            // Scroll to order details
+            orderDetailsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderOrderDetails(order) {
+            orderItemsContainer.innerHTML = '';
+            
+            let total = 0;
+            
+            order.items.forEach(item => {
+                const orderItem = document.createElement('div');
+                orderItem.className = 'order-item';
+                orderItem.innerHTML = `
+                    <span>${item.name} (${item.quantity})</span>
+                    <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+                `;
+                orderItemsContainer.appendChild(orderItem);
+                total += item.price * item.quantity;
+            });
+            
+            orderTotal.textContent = total.toFixed(2);
+            
+            deliveryInfo.innerHTML = `
+                <p><strong>Name:</strong> ${order.customer.name}</p>
+                <p><strong>Phone:</strong> ${order.customer.phone}</p>
+                <p><strong>Address:</strong> ${order.customer.address}</p>
+                <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
+            `;
+        }
+
+        // Contact form function
+        function submitContactForm(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const subject = document.getElementById('contact-subject').value;
+            const message = document.getElementById('contact-message').value;
+            
+            // In a real application, you would send this data to a server
+            console.log('Contact form submitted:', { name, email, subject, message });
+            
+            // Show success message
+            alert('Thank you for your message! We will get back to you soon.');
+            
+            // Reset form
+            contactForm.reset();
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>                                                                                                                   
