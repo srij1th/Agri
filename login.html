@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Direct - Secure Portal</title>
+    <style>
+        /* ===== CSS ===== */
+        :root {
+            --primary: #2e8b57; /* Farm Direct green */
+            --secondary: #ff7f50;
+            --dark: #2f4f4f;
+            --light: #f5f5f5;
+            --warning: #dc3545;
+            --shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: url('https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .form-container h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtext {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .subtext.warning {
+            color: var(--warning);
+            font-weight: 600;
+            background: rgba(220, 53, 69, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .error-message {
+            color: var(--warning);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input.error {
+            border-color: var(--warning);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2);
+        }
+
+        .password-strength {
+            height: 4px;
+            background: #eee;
+            margin-top: 5px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s;
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 1.8rem 0;
+        }
+
+        .checkbox-group input {
+            margin-right: 10px;
+            accent-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: #267d4a;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 1.8rem;
+            color: #666;
+        }
+
+        .toggle-form a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dashed var(--primary);
+            padding-bottom: 2px;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .forgot-password a {
+            color: #666;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+            box-shadow: var(--shadow);
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .otp-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            gap: 10px;
+        }
+
+        .otp-inputs input {
+            width: 100%;
+            padding: 12px;
+            text-align: center;
+            font-size: 1.3rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .otp-inputs input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2);
+        }
+
+        .resend {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .resend a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .otp-debug {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 1.8rem;
+            }
+            
+            .modal-content {
+                padding: 1.8rem;
+            }
+        }
+
+        /* Password strength colors */
+        .weak { background: #ff4757; width: 30%; }
+        .medium { background: #ffa502; width: 60%; }
+        .strong { background: var(--primary); width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Registration Form -->
+        <div class="form-container" id="register-form">
+            <div class="logo">
+                <h1>Farm Direct</h1>
+                <p>Secure Vendor Portal</p>
+            </div>
+            
+            <h2>Create Account</h2>
+            <p class="subtext">Register for exclusive market access</p>
+            
+            <form id="registration-form">
+                <div class="input-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required placeholder="your@email.com">
+                    <span class="hint">We'll send a verification code to this email</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" 
+                           pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" 
+                           required placeholder="Create a password">
+                    <div class="password-strength">
+                        <div class="strength-bar" id="strength-bar"></div>
+                    </div>
+                    <span class="hint">Minimum 8 characters with numbers & symbols</span>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I agree to single-user access policy and terms</label>
+                </div>
+                
+                <button type="submit" class="btn">Register Securely</button>
+            </form>
+            
+            <p class="toggle-form">Already registered? <a href="#" id="show-login">Login here</a></p>
+        </div>
+        
+        <!-- Login Form -->
+        <div class="form-container hidden" id="login-container">
+            <div class="logo">
+                <h1>Farm Direct</h1>
+                <p>Vendor Dashboard Access</p>
+            </div>
+            
+            <h2>Welcome Back</h2>
+            <p class="subtext warning">Only one active session allowed per account</p>
+            
+            <form id="login-form" action="full.html" method="GET">
+                <div class="input-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" name="email" required placeholder="your@email.com">
+                </div>
+                
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" required placeholder="Enter your password">
+                    <div class="error-message" id="password-error">Incorrect password. Please try again.</div>
+                </div>
+                
+                <div class="forgot-password">
+                    <a href="#" id="forgot-password">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="btn">Login to Dashboard</button>
+            </form>
+            
+            <p class="toggle-form">New to the portal? <a href="#" id="show-register">Register here</a></p>
+        </div>
+        
+        <!-- OTP Verification Modal -->
+        <div class="modal" id="otp-modal">
+            <div class="modal-content">
+                <h3>Verify Your Email</h3>
+                <p>We sent a 6-digit code to <strong id="user-email"></strong></p>
+                
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" pattern="\d" inputmode="numeric">
+                    <input type="text" maxlength="1" pattern="\d" inputmode="numeric">
+                    <input type="text" maxlength="1" pattern="\d" inputmode="numeric">
+                    <input type="text" maxlength="1" pattern="\d" inputmode="numeric">
+                    <input type="text" maxlength="1" pattern="\d" inputmode="numeric">
+                    <input type="text" maxlength="1" pattern="\d" inputmode="numeric">
+                </div>
+                
+                <div class="otp-debug" id="otp-debug">
+                    <strong>DEBUG MODE:</strong> OTP will appear here for testing
+                </div>
+                
+                <button class="btn" id="verify-otp">Verify & Continue</button>
+                <p class="resend">Didn't receive code? <a href="#" id="resend-otp">Resend OTP</a></p>
+            </div>
+        </div>
+
+        <!-- Forgot Password Modal -->
+        <div class="modal" id="forgot-password-modal">
+            <div class="modal-content">
+                <h3>Reset Your Password</h3>
+                <p>Enter your email address to receive a password reset link</p>
+                
+                <div class="input-group" style="margin: 2rem 0;">
+                    <label for="reset-email">Email Address</label>
+                    <input type="email" id="reset-email" required placeholder="your@email.com">
+                    <div class="error-message" id="reset-error"></div>
+                </div>
+                
+                <button class="btn" id="send-reset-link">Send Reset Link</button>
+                <p class="resend">Remember your password? <a href="#" id="back-to-login">Back to login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== JavaScript =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const registerForm = document.getElementById('register-form');
+            const loginContainer = document.getElementById('login-container');
+            const showLogin = document.getElementById('show-login');
+            const showRegister = document.getElementById('show-register');
+            const otpModal = document.getElementById('otp-modal');
+            const verifyOtpBtn = document.getElementById('verify-otp');
+            const resendOtpBtn = document.getElementById('resend-otp');
+            const passwordInput = document.getElementById('password');
+            const strengthBar = document.getElementById('strength-bar');
+            const otpDebug = document.getElementById('otp-debug');
+            const forgotPasswordLink = document.getElementById('forgot-password');
+            const forgotPasswordModal = document.getElementById('forgot-password-modal');
+            const backToLogin = document.getElementById('back-to-login');
+            const sendResetLink = document.getElementById('send-reset-link');
+            const passwordError = document.getElementById('password-error');
+            const loginPasswordInput = document.getElementById('login-password');
+            
+            // Store the generated OTP (for simulation)
+            let generatedOTP = '';
+            let userEmail = '';
+
+            // Form Toggle
+            showLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                registerForm.classList.add('hidden');
+                loginContainer.classList.remove('hidden');
+            });
+            
+            showRegister.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginContainer.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+            });
+
+            // Password Strength Meter
+            passwordInput.addEventListener('input', function() {
+                const strength = checkPasswordStrength(this.value);
+                strengthBar.className = 'strength-bar ' + strength;
+            });
+
+            function checkPasswordStrength(password) {
+                if (password.length === 0) return '';
+                
+                const hasLetter = /[A-Za-z]/.test(password);
+                const hasNumber = /\d/.test(password);
+                const hasSpecial = /[@$!%*#?&]/.test(password);
+                
+                if (password.length < 4) return 'weak';
+                
+                let strength = 0;
+                if (hasLetter) strength++;
+                if (hasNumber) strength++;
+                if (hasSpecial) strength++;
+                if (password.length > 10) strength++;
+                
+                if (strength < 2) return 'weak';
+                if (strength < 4) return 'medium';
+                return 'strong';
+            }
+
+            // Generate Random 6-digit OTP
+            function generateOTP() {
+                return Math.floor(100000 + Math.random() * 900000).toString();
+            }
+
+            // Registration Form Submission
+            document.getElementById('registration-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                userEmail = document.getElementById('email').value;
+                document.getElementById('user-email').textContent = userEmail;
+                
+                // Generate and "send" OTP (simulated)
+                generatedOTP = generateOTP();
+                otpDebug.innerHTML = `<strong>DEBUG MODE:</strong> Your OTP is <span style="color: var(--primary); font-weight: bold;">${generatedOTP}</span>`;
+                
+                // Show OTP modal
+                otpModal.classList.add('active');
+                
+                // Auto-focus first OTP input
+                const otpInputs = document.querySelectorAll('.otp-inputs input');
+                otpInputs[0].focus();
+                
+                // Handle OTP input navigation
+                otpInputs.forEach((input, index) => {
+                    input.value = ''; // Clear previous inputs
+                    input.addEventListener('input', () => {
+                        if (input.value && index < otpInputs.length - 1) {
+                            otpInputs[index + 1].focus();
+                        }
+                    });
+                    
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace' && !input.value && index > 0) {
+                            otpInputs[index - 1].focus();
+                        }
+                    });
+                });
+            });
+
+            // Verify OTP
+            verifyOtpBtn.addEventListener('click', function() {
+                const otpInputs = document.querySelectorAll('.otp-inputs input');
+                let enteredOTP = '';
+                otpInputs.forEach(input => enteredOTP += input.value);
+                
+                if (enteredOTP === generatedOTP) {
+                    alert('OTP verified successfully! Account created.\n\n(Simulated success - in production this would redirect to dashboard)');
+                    otpModal.classList.remove('active');
+                    
+                    // Reset forms
+                    document.getElementById('registration-form').reset();
+                    registerForm.classList.add('hidden');
+                    loginContainer.classList.remove('hidden');
+                    strengthBar.className = 'strength-bar';
+                } else {
+                    alert('Invalid OTP. Please try again.');
+                    // Highlight error
+                    otpInputs.forEach(input => {
+                        input.style.borderColor = 'var(--warning)';
+                        setTimeout(() => input.style.borderColor = '', 1000);
+                    });
+                }
+            });
+
+            // Resend OTP
+            resendOtpBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                generatedOTP = generateOTP();
+                otpDebug.innerHTML = `<strong>DEBUG MODE:</strong> New OTP is <span style="color: var(--primary); font-weight: bold;">${generatedOTP}</span>`;
+                
+                // Clear previous inputs
+                document.querySelectorAll('.otp-inputs input').forEach(input => input.value = '');
+                document.querySelector('.otp-inputs input').focus();
+            });
+
+            // Login Form Submission
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                // Basic validation - only prevent submission if validation fails
+                if (email === 'active@session.com') {
+                    e.preventDefault();
+                    alert('Error: This account is already active on another device!');
+                } else if (!email || !password) {
+                    e.preventDefault();
+                    alert('Please enter valid credentials');
+                } else if (password === 'wrongpassword') {
+                    // Simulate incorrect password
+                    e.preventDefault();
+                    loginPasswordInput.classList.add('error');
+                    passwordError.style.display = 'block';
+                    setTimeout(() => {
+                        loginPasswordInput.classList.remove('error');
+                        passwordError.style.display = 'none';
+                    }, 3000);
+                }
+                // If validation passes, the form will submit to full.html automatically
+            });
+
+            // Forgot Password Flow
+            forgotPasswordLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                loginContainer.classList.add('hidden');
+                forgotPasswordModal.classList.add('active');
+            });
+
+            backToLogin.addEventListener('click', function(e) {
+                e.preventDefault();
+                forgotPasswordModal.classList.remove('active');
+                loginContainer.classList.remove('hidden');
+            });
+
+            sendResetLink.addEventListener('click', function() {
+                const resetEmail = document.getElementById('reset-email').value;
+                const resetError = document.getElementById('reset-error');
+                
+                if (!resetEmail) {
+                    resetError.textContent = 'Please enter your email address';
+                    resetError.style.display = 'block';
+                    return;
+                }
+                
+                // Simulate sending reset link
+                resetError.textContent = '';
+                resetError.style.display = 'none';
+                
+                alert(`Password reset link has been sent to ${resetEmail}\n\n(Simulated - in production this would send a real email)`);
+                forgotPasswordModal.classList.remove('active');
+                loginContainer.classList.remove('hidden');
+            });
+            
+            // Close modals when clicking outside
+            [otpModal, forgotPasswordModal].forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
